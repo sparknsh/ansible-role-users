@@ -1,0 +1,66 @@
+---
+
+- name: Users - {{ user.name }} - Group
+  group:
+    name: "{{ user.name }}"
+    state: "{{ user.state | default('present') }}"
+    gid: "{{ user.gid | default(omit) }}"
+
+- name: Users - {{ user.name }} - User
+  user:
+    name: "{{ user.name }}"
+    state: "{{ user.state | default('present') }}"
+    comment: "{{ user.fullname | default(omit) }}"
+    password: "{{ user.password | default(omit) }}"
+    uid: "{{ user.uid | default(omit) }}"
+    group: "{{ user.group | default(user.name) }}"
+    groups: "{{ user.groups | default(omit) }}"
+    shell: "{{ user.shell | default(users_shell) }}"
+    createhome: "{{ user.createhome | default(users_createhome) }}"
+    home: "{{ user.home | default('/home/' + user.name) }}"
+    update_password: on_create
+  register: users_manage_user
+
+- name: Users - {{ user.name }} - Authorized Key
+  authorized_key:
+    user: "{{ user.name }}"
+    state: present
+    key: "{{ user.authorized_key }}"
+    manage_dir: "yes"
+  when:
+    - user.authorized_key is defined
+
+- name: Users - {{ user.name }} - Authorized Keys
+  authorized_key:
+    user: "{{ user.name }}"
+    state: present
+    key: "{{ authorized_key }}"
+    manage_dir: "yes"
+  with_items:
+    - "{{ user.authorized_keys }}"
+  loop_control:
+    label: "{{ user.name }}"
+    loop_var: authorized_key
+  when:
+    - user.authorized_keys is defined
+
+- name: Users - {{ user.name }} - hushlogin
+  file:
+    dest: "{{ user.home | default('/home/' + user.name) }}/.hushlogin"
+    state: touch
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
+    mode: "0644"
+    access_time: preserve
+    modification_time: preserve
+  when:
+    - user.name != "root"
+    - user.hushlogin | bool
+
+- name: Users - {{ user.name }} - Sudo
+  include: sudo.yml
+  loop_control:
+    label: "{{ user.name }}"
+  when:
+    - users_sudo | bool
+    - user.sudo_options is defined

@@ -1,0 +1,24 @@
+---
+
+users_sudo: true
+users_createhome: true
+users_shell: /bin/bash
+
+# users_user_root:
+#   password:
+#   authorized_keys: []
+
+users_user_list: []
+#  - name:
+#    state: present
+#    fullname:
+#    password:
+#    createhome: true
+#    hushlogin: true
+#    shell: /bin/bash
+#    uid: 1001
+#    gid: 1001
+#    groups:
+#    sudo_options: ""
+#    authorized_key: ""
+#    authorized_keys: []

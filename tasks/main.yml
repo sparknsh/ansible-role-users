@@ -1,0 +1,24 @@
+---
+
+- name: Users - Install sudo
+  package:
+    name: sudo
+    state: present
+  when:
+    - users_sudo | bool
+
+- name: Users - root
+  include: root.yml
+  when:
+    - users_user_root is defined
+
+- name: Users - Run User Accounts
+  include: user.yml
+  with_items:
+    - "{{ users_user_list }}"
+  loop_control:
+    label: "{{ user.name }}"
+    loop_var: user
+  when:
+    (( users_list is defined and user.name in users_list ) or ( users_list is not defined )) and
+    ( users_user_list is defined )

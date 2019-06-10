@@ -1,0 +1,15 @@
+---
+
+users_user_list:
+  - name: test
+    state: present
+    fullname: Test User
+    password: $6$pUX385iiiwdM3O$5/uI63MSMe56nfO3ZdXgps.EcoMsTNNbCu0CrhJi7vw53SsyXE9XiS5escBZgmvcXFpdY3oUDWXdomyz6fbnH1
+    createhome: true
+    hushlogin: true
+    shell: /bin/bash
+    uid: 1001
+    gid: 1001
+    groups:
+      - root
+    sudo_options: "ALL=(ALL) NOPASSWD: ALL"

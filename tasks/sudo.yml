@@ -1,0 +1,19 @@
+---
+
+- name: Users - {{ user.name }} - Sudo Install
+  template:
+    src: sudoers.j2
+    dest: "/etc/sudoers.d/{{ user.name }}"
+  when:
+    - user.sudo_options is defined
+  loop_control:
+    label: "{{ user.name }}"
+
+- name: Users - {{ user.name }} - Sudo Remove
+  file:
+    path: "/etc/sudoers.d/{{ user.name }}"
+    state: absent
+  when:
+    - user.sudo_options is not defined
+  loop_control:
+    label: "{{ user.name }}"

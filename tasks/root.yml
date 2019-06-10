@@ -1,0 +1,19 @@
+---
+
+- name: Users - root - Password
+  user:
+    name: root
+    password: "{{ users_user_root.password }}"
+    update_password: always
+
+- name: Users - root - Authorized Keys
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ authorized_key }}"
+    manage_dir: "yes"
+  with_items:
+    - "{{ users_user_root.authorized_keys }}"
+  loop_control:
+    label: "root"
+    loop_var: authorized_key
